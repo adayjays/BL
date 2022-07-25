@@ -14,15 +14,13 @@
         android:text="@string/login_welcome"
         style="@style/page_title"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        />
+        android:gravity="center_horizontal"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Username"
         style="@style/control_label"
-        android:gravity="start"
-        />
+        android:gravity="start"/>
     <EditText
         android:id="@+id/et_username"
         android:layout_width="match_parent"
