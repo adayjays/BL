@@ -1,9 +1,8 @@
 package com.example.lendme.ui.lend;
 
-import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,13 +19,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lendme.GetLocation;
 import com.example.lendme.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -41,6 +40,7 @@ public class PostItemFragment extends Fragment implements LocationListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int REQUEST_LOCATION = 1;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -52,13 +52,14 @@ public class PostItemFragment extends Fragment implements LocationListener {
     EditText price;
     Button submit;
     Spinner category;
+    private Activity activity;
     private FloatingActionButton openInputPopupDialogButton;
     private RecyclerView recyclerView;
     private TextView emptyText;
     private LocationManager locationManager;
     private Location loc;
     private String cat;
-    private String locationLatLong ="";
+    private String locationLatLong = "";
 
     private ProgressDialog progressDialog;
 
@@ -91,14 +92,16 @@ public class PostItemFragment extends Fragment implements LocationListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        activity = getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        activity = getActivity();
         Bundle bundle = this.getArguments();
         View view = inflater.inflate(R.layout.fragment_post_item, container, false);
-        String Key  = bundle.getString("key");
+        String Key = bundle.getString("key");
         title = view.findViewById(R.id.title);
         description = view.findViewById(R.id.description);
         availability = view.findViewById(R.id.availability);
@@ -109,18 +112,18 @@ public class PostItemFragment extends Fragment implements LocationListener {
         progressDialog = new ProgressDialog(getContext());
 //        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         loc = null;
+        GetLocation getLocationInstance = new GetLocation(activity);
 
-//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
+
+            loc = getLocationInstance.getLocation(activity);
             onLocationChanged(loc);
-        }
+
 
         cat = "Books";
 
 
-        String[] items = new String[]{"Books", "Outdoor supplies", "Technology","Household Items","clothing/Jewelry", "Miscellaneous"};
+        String[] items = new String[]{"Books", "Outdoor supplies", "Technology", "Household Items", "Clothing and Jewelry", "Miscellaneous"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, items);
 
@@ -149,6 +152,8 @@ public class PostItemFragment extends Fragment implements LocationListener {
         return view;
     }
 
+
+
     private void saveTodo() {
         ParseObject item = new ParseObject("items");
         GetLocation getLocation = new GetLocation(getContext());
@@ -167,7 +172,7 @@ public class PostItemFragment extends Fragment implements LocationListener {
                 double lat = Double.parseDouble(locationLatLongArray[0]);
                 double lng = Double.parseDouble(locationLatLongArray[1]);
 
-                item.put("seller_loc",getLocation.getAddresPlain(lat,lng));
+                item.put("seller_loc",new ParseGeoPoint(lat,lng));
             }
             item.put("category",cat);
             item.put("is_borrowable",1);

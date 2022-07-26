@@ -4,10 +4,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lendme.R;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +33,12 @@ public class MessageFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String val ="";
+    private boolean isMsgs = false;
+    private TextView msgMessage ;
+    private RecyclerView recyclerView;
+
+    String userId;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -59,7 +74,81 @@ public class MessageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        userId =currentUser.getObjectId();
+        View view = inflater.inflate(R.layout.fragment_message, container, false);
+        msgMessage = view.findViewById(R.id.no_msgs);
+        recyclerView = view.findViewById(R.id.msg_list);
+
+        getMessages();
+        getMessagesAsLender();
+        if(isMsgs){
+            msgMessage.setText("");
+        }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_message, container, false);
+        return view;
     }
+    private void getMessages(){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("messages");
+        //We use this code to fetch data from newest to oldest.
+        query.whereEqualTo("possible_buyer", userId);
+
+        query.orderByDescending("createdAt");
+        query.findInBackground((objects, e) -> {
+            if (e == null) {
+                isMsgs = true;
+                initMessageList(objects);
+            } else {
+                Toast.makeText(getActivity(),"No Messages Yet",Toast.LENGTH_SHORT).show();
+            }
+        });
+//        return n
+    }
+
+
+
+    private void getMessagesAsLender(){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("messages");
+        //We use this code to fetch data from newest to oldest.
+        query.whereEqualTo("seller", userId);
+
+        query.orderByDescending("createdAt");
+        query.findInBackground((objects, e) -> {
+            if (e == null) {
+                isMsgs = true;
+                initMessageList2(objects);
+            } else {
+                Toast.makeText(getActivity(),"No Messages Yet",Toast.LENGTH_SHORT).show();
+            }
+        });
+//        return n
+    }
+
+    private void initMessageList2(List<ParseObject> list) {
+        if (list == null || list.isEmpty()) {
+//            empty_text.setVisibility(View.VISIBLE);
+            return;
+        }
+//        empty_text.setVisibility(View.GONE);
+
+        MessageAdapter adapter = new MessageAdapter(list, getContext());
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
+    private void initMessageList(List<ParseObject> list) {
+        if (list == null || list.isEmpty()) {
+//            empty_text.setVisibility(View.VISIBLE);
+            return;
+        }
+//        empty_text.setVisibility(View.GONE);
+
+        MessageAdapter adapter = new MessageAdapter(list, getContext());
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
+
 }

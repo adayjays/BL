@@ -63,7 +63,8 @@ public class Lend extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lend, container, false);
-        String[] itemsCategories = new String[]{"Books", "Outdoor supplies", "Technology", "Household Items", "clothing/Jewelry", "Miscellaneous"};
+        String[] itemsCategories = new String[]{"Books", "Outdoor supplies", "Technology", "Household Items", "Clothing and Jewelry", "Miscellaneous"};
+        getActivity().setTitle("Lend");
 
         listView = view.findViewById(R.id.my_list_view2);
         CustomLendAdapter listAdapter = new CustomLendAdapter(itemsCategories);

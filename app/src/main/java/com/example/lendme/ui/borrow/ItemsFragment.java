@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -97,8 +96,10 @@ public class ItemsFragment extends Fragment {
         itemListener = new RecyclerViewClickListener() {
             @Override
             public void recyclerViewListClicked(View v, int position) {
-                Toast.makeText(getContext(),"Position is",Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(),"Position is",Toast.LENGTH_LONG).show();
+
             }
+
 
         };
         // Inflate the layout for this fragment
@@ -134,6 +135,7 @@ public class ItemsFragment extends Fragment {
 //                    Intent intent = new Intent(getContext(), ItemsActivity.class);
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 //                    startActivity(intent);
+
                 });
         AlertDialog ok = builder.create();
         ok.show();

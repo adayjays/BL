@@ -10,8 +10,11 @@ import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.lendme.R;
 import com.parse.GetCallback;
@@ -82,7 +85,7 @@ public class ItemFragment extends Fragment {
         if (b != null) {
             String value = b.getString("key");
             objectId = value;
-
+            Toast.makeText(getContext(),"Text! "+value,Toast.LENGTH_SHORT).show();
             isAvailable = true;
             getData(value);
             //The key argument here must match that used in the other activity
@@ -93,6 +96,13 @@ public class ItemFragment extends Fragment {
                 public void onClick(View view) {
                     Bundle bundle = new Bundle();
                     bundle.putString("key", objectId);
+                    ConfirmationFragment fragment = new ConfirmationFragment();
+                    FragmentManager fm = getFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    fragment.setArguments(bundle);
+
+                    ft.replace(R.id.nav_host_fragment_activity_main,fragment,"new fragment");
+                            ft.commit();
 
                 }
             });

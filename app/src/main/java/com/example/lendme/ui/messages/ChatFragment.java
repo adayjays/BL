@@ -42,7 +42,7 @@ public class ChatFragment extends Fragment {
     private String mParam2;
     Button send;
     EditText msg;
-    String itemId, chatId, userId, sellerId;
+    String itemId, chatId, userId, sellerId,userName;
     RecyclerView recyclerView;
     RecyclerViewClickListener recyclerViewClickListener;
 
@@ -93,6 +93,7 @@ public class ChatFragment extends Fragment {
         sellerId ="";
         ParseUser currentUser = ParseUser.getCurrentUser();
         userId =currentUser.getObjectId();
+        userName = currentUser.getUsername();
 
         Bundle extras = this.getArguments();
         if (extras != null) {
@@ -217,6 +218,7 @@ public class ChatFragment extends Fragment {
         chat.put("chat_id", chatId);
         chat.put("is_read","sent");
         chat.put("sender", userId);
+        chat.put("sender_name", userName);
 
         chat.saveInBackground(e -> {
             if (e == null) {

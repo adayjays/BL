@@ -1,10 +1,20 @@
 package com.example.lendme;
 
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
+
+import com.parse.ParseGeoPoint;
+import com.parse.ParseUser;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,6 +22,8 @@ import java.util.Locale;
 
 public class GetLocation {
     Context context;
+    private static final int REQUEST_LOCATION = 1;
+    LocationManager locationManager;
     public GetLocation(Context c){
         context = c;
     }
@@ -84,5 +96,59 @@ public class GetLocation {
 //            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         return location;
+    }
+    public ParseGeoPoint getCurrentUserLocation(){
+
+        // finding currentUser
+        ParseUser currentUser = ParseUser.getCurrentUser();
+
+        if (currentUser == null) {
+            // if it's not possible to find the user, do something like returning to login activity
+        }
+        // otherwise, return the current user location
+        return currentUser.getParseGeoPoint("Location");
+
+    }
+    public ParseGeoPoint getCurrentLocation(){
+
+        return new ParseGeoPoint(15.822238344514378, -72.42845934415942);
+    }
+    public ParseGeoPoint saveCurrentUserLocation(Activity activity) {
+        // requesting permission to get user's location
+        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        }
+        else {
+            // getting last know user's location
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            // checking if the location is null
+            if(location != null){
+                // if it isn't, save it to Back4App Dashboard
+                ParseGeoPoint currentUserLocation = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
+
+                return currentUserLocation;
+
+            }
+            else {
+                // if it is null, do something like displaying error and coming back to the menu activity
+            }
+        }
+        return null;
+    }
+    public Location getLocation(Activity activity) {
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return getLocation(activity);
+        }
+        return locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
     }
 }

@@ -17,7 +17,7 @@
         android:label="fragment_borrow"
         tools:layout="@layout/fragment_borrow" />
     <fragment
-        android:id="@+id/lend"
+        android:id="@+id/lend_page"
         android:name="com.example.lendme.ui.lend.Lend"
         android:label="fragment_lend"
         tools:layout="@layout/fragment_lend" />

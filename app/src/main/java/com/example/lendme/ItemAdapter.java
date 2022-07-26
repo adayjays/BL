@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lendme.ui.borrow.ConfirmationFragment;
 import com.parse.ParseObject;
 
 import java.io.IOException;
@@ -54,15 +58,29 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> {
     public void onBindViewHolder(@NonNull ItemHolder holder, @SuppressLint("RecyclerView") final int position) {
         ParseObject object = list.get(position);
         holder.title.setText(object.getString("title") + " $"+object.getString("price")+" /day");
-        holder.location.setText("located at : "+object.getString("seller_loc"));
+        if (object.getString("seller_loc") != "no location data found"){
+            try {
+                GetLocation getLocation = new GetLocation(context.getApplicationContext());
+                double distance = getLocation.getCurrentLocation().distanceInKilometersTo(object.getParseGeoPoint("seller_loc"));
+                holder.location.setText("located at : "+Math.round (distance * 100.0) / 100.0  + " km away");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         holder.image.setImageBitmap(getBitmapFromURL(object.getString("image_url")));
         holder.title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                itemListener.recyclerViewListClicked(v,position);
-//                final Intent intent = new Intent(context, ItemActivity.class);
-//                intent.putExtra("key",object.getObjectId());
-//                context.startActivity(intent);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("key", object.getObjectId());
+                ConfirmationFragment fragment = new ConfirmationFragment();
+                fragment.setArguments(bundle);
+                FragmentManager manager = ((MainActivity) context).getSupportFragmentManager();
+                fragment.setArguments(bundle);
+                manager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_host_fragment_activity_main,fragment,null).commit();
+
             }
         });
 
@@ -71,14 +89,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> {
     public static Bitmap getBitmapFromURL(String src) {
         if(URLUtil.isHttpUrl(src) || URLUtil.isHttpsUrl(src)) {
             try {
-                Log.e("src", src);
                 URL url = new URL(src);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                Log.e("Bitmap", "returned");
+//                Log.e("Bitmap", "returned");
                 return myBitmap;
             } catch (IOException e) {
                 e.printStackTrace();

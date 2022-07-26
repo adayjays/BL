@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -12,7 +14,6 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.example.lendme.R;
-import com.example.lendme.ui.lend.PostItemFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +30,7 @@ public class Borrow extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private String[] itemsCategories = new String[]{"Books", "Outdoor supplies", "Technology", "Household Items", "clothing/Jewelry", "Miscellaneous"};
+    private String[] itemsCategories = new String[]{"Books", "Outdoor supplies", "Technology", "Household Items", "Clothing and Jewelry", "Miscellaneous"};
     private ListView listView;
 
     public Borrow() {
@@ -60,13 +61,19 @@ public class Borrow extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_borrow, container, false);
+//        view.getSupportActionBar().setTitle("Hello world App");
         listView = view.findViewById(R.id.my_list_view);
-
+        getActivity().setTitle("Borrow");
         CustomBorrowAdapter listAdapter = new CustomBorrowAdapter(itemsCategories);
 //        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
 //                this,
 //                android.R.layout.simple_list_item_1,
 //                itemsCategories);
+        Animation animation = null;
+        animation = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.anim);
+        animation.setDuration(200);
+        view.startAnimation(animation);
+        animation = null;
 
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -75,7 +82,7 @@ public class Borrow extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("key",itemsCategories[i]);
-                PostItemFragment fragment = new PostItemFragment();
+                ItemsFragment fragment = new ItemsFragment();
                 fragment.setArguments(bundle);
                 getFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main,fragment,"new fragment").commit();
             }
