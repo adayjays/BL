@@ -1,31 +1,27 @@
 package com.example.lendme.ui.messages;
 
+import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.lendme.MainActivity;
-import com.example.lendme.R;
-import com.example.lendme.ui.borrow.ConfirmationFragment;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.List;
-
 public class MessageAdapter extends RecyclerView.Adapter<MessageHolder> {
     private List<ParseObject> list;
     private Context context;
+    Activity activity;
 
-    public MessageAdapter(List<ParseObject> list, Context context) {
+    public MessageAdapter(List<ParseObject> list, Context context,Activity activity) {
         this.list = list;
         this.context = context;
+        this.activity = activity;
 
     }
 
@@ -50,14 +46,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageHolder> {
         holder.sender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String dataToSend = object.getString("item")+","+object.getString("item");
+                MessageFragment messageFragment  = new MessageFragment();
+                messageFragment.goToChatFragment(dataToSend);
 
-                Bundle bundle = new Bundle();
-                bundle.putString("key", object.getString("item")+","+object.getString("item"));
-                ChatFragment fragment = new ChatFragment();
-                fragment.setArguments(bundle);
-                FragmentManager manager = ((MainActivity) context).getSupportFragmentManager();
-                fragment.setArguments(bundle);
-                manager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_host_fragment_activity_main,fragment,null).commit();
 
             }
         });

@@ -147,7 +147,7 @@ public class GetLocation {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return getLocation(activity);
+//            return null;
         }
         return locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
     }

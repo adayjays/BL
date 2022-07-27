@@ -11,7 +11,7 @@
         android:icon="@drawable/borrow"
         android:title="Borrow" />
     <item
-        android:id="@+id/len"
+        android:id="@+id/lend_page"
         android:icon="@drawable/lending"
         android:title="Lend" />
 

@@ -1,14 +1,17 @@
 package com.example.lendme.ui.borrow;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.lendme.MainActivity;
 import com.example.lendme.R;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -77,18 +80,18 @@ public class ConfirmationFragment extends Fragment {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent in = new Intent(ConfirmationActivity.this, MainActivity.class);
-//                startActivity(in);
+                Intent in = new Intent(getActivity(), MainActivity.class);
+                startActivity(in);
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 updateItem(value_key);
-//                Toast t = Toast.makeText(ConfirmationActivity.this, "Borrow Confirmed !", Toast.LENGTH_SHORT);
-//                t.show();
-//                Intent in = new Intent(ConfirmationActivity.this, MainActivity.class);
-//                startActivity(in);
+                Toast t = Toast.makeText(getActivity(), "Borrow Confirmed !", Toast.LENGTH_SHORT);
+                t.show();
+                Intent in = new Intent(getActivity(), MainActivity.class);
+                startActivity(in);
             }
         });
         Bundle extras = this.getArguments();

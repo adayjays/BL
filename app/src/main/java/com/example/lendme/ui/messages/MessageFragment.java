@@ -8,9 +8,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lendme.MainActivity;
 import com.example.lendme.R;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -74,6 +77,8 @@ public class MessageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+//        ActionBar actionBar = getActivity().getActionBar();
+//        actionBar.setTitle("Your title");
         ParseUser currentUser = ParseUser.getCurrentUser();
         userId =currentUser.getObjectId();
         View view = inflater.inflate(R.layout.fragment_message, container, false);
@@ -131,7 +136,7 @@ public class MessageFragment extends Fragment {
         }
 //        empty_text.setVisibility(View.GONE);
 
-        MessageAdapter adapter = new MessageAdapter(list, getContext());
+        MessageAdapter adapter = new MessageAdapter(list, getContext(),getActivity());
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -144,11 +149,21 @@ public class MessageFragment extends Fragment {
         }
 //        empty_text.setVisibility(View.GONE);
 
-        MessageAdapter adapter = new MessageAdapter(list, getContext());
+        MessageAdapter adapter = new MessageAdapter(list, getContext(),getActivity());
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+    }
+    public void goToChatFragment(String dataToSend){
+        Bundle bundle = new Bundle();
+        bundle.putString("key", dataToSend);
+        ChatFragment fragment = new ChatFragment();
+        fragment.setArguments(bundle);
+        FragmentManager manager = ((MainActivity) getContext()).getSupportFragmentManager();
+        fragment.setArguments(bundle);
+        manager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_host_fragment_activity_main,fragment,null).commit();
+
     }
 
 }

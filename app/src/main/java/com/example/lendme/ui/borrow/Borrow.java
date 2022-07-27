@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -69,11 +67,7 @@ public class Borrow extends Fragment {
 //                this,
 //                android.R.layout.simple_list_item_1,
 //                itemsCategories);
-        Animation animation = null;
-        animation = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.anim);
-        animation.setDuration(200);
-        view.startAnimation(animation);
-        animation = null;
+
 
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

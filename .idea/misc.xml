@@ -4,6 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Dante/Documents/LendMe/app/src/main/res/drawable/edit_text.xml" value="0.1995" />
+        <entry key="..\:/Users/Dante/Documents/LendMe/app/src/main/res/drawable/item_focused.xml" value="0.2985" />
+        <entry key="..\:/Users/Dante/Documents/LendMe/app/src/main/res/drawable/item_normal.xml" value="0.2985" />
+        <entry key="..\:/Users/Dante/Documents/LendMe/app/src/main/res/drawable/item_selected.xml" value="0.2985" />
+        <entry key="..\:/Users/Dante/Documents/LendMe/app/src/main/res/drawable/list_item_selector.xml" value="0.2985" />
         <entry key="..\:/Users/Dante/Documents/LendMe/app/src/main/res/layout/activity_login.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Dante/Documents/LendMe/app/src/main/res/layout/activity_logout.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Dante/Documents/LendMe/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />

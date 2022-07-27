@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,7 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.lendme.ui.borrow.ConfirmationFragment;
+import com.example.lendme.ui.borrow.ItemFragment;
 import com.parse.ParseObject;
 
 import java.io.IOException;
@@ -69,18 +71,22 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemHolder> {
         }
 
         holder.image.setImageBitmap(getBitmapFromURL(object.getString("image_url")));
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_in);
+
         holder.title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("key", object.getObjectId());
-                ConfirmationFragment fragment = new ConfirmationFragment();
+                ItemFragment fragment = new ItemFragment();
                 fragment.setArguments(bundle);
                 FragmentManager manager = ((MainActivity) context).getSupportFragmentManager();
                 fragment.setArguments(bundle);
                 manager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_host_fragment_activity_main,fragment,null).commit();
-
+//                Intent intent = new Intent(context,MainActivity.class);
+//                intent.putExtra("fragment","1,"+object.getObjectId());
+//                context.startActivity(intent);
             }
         });
 

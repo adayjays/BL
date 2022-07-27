@@ -14,16 +14,41 @@
     <fragment
         android:id="@+id/borrow"
         android:name="com.example.lendme.ui.borrow.Borrow"
-        android:label="fragment_borrow"
+        android:label="Borrow"
         tools:layout="@layout/fragment_borrow" />
     <fragment
         android:id="@+id/lend_page"
         android:name="com.example.lendme.ui.lend.Lend"
-        android:label="fragment_lend"
+        android:label="Lend"
         tools:layout="@layout/fragment_lend" />
     <fragment
         android:id="@+id/messageFragment"
         android:name="com.example.lendme.ui.messages.MessageFragment"
-        android:label="fragment_message"
+        android:label="Messages"
         tools:layout="@layout/fragment_message" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.lendme.ui.messages.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/confirmationFragment"
+        android:name="com.example.lendme.ui.borrow.ConfirmationFragment"
+        android:label="Confirmation Page"
+        tools:layout="@layout/fragment_confirmation" />
+    <fragment
+        android:id="@+id/itemFragment"
+        android:name="com.example.lendme.ui.borrow.ItemFragment"
+        android:label="Item view"
+        tools:layout="@layout/fragment_item" />
+    <fragment
+        android:id="@+id/itemsFragment"
+        android:name="com.example.lendme.ui.borrow.ItemsFragment"
+        android:label="Item List"
+        tools:layout="@layout/fragment_items" />
+    <fragment
+        android:id="@+id/postItemFragment"
+        android:name="com.example.lendme.ui.lend.PostItemFragment"
+        android:label="Post an Item"
+        tools:layout="@layout/fragment_post_item" />
 </navigation>

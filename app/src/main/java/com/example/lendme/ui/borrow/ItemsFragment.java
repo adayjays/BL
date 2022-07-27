@@ -9,10 +9,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lendme.ItemAdapter;
+import com.example.lendme.MainActivity;
 import com.example.lendme.R;
 import com.example.lendme.RecyclerViewClickListener;
 import com.parse.ParseObject;
@@ -123,7 +126,16 @@ public class ItemsFragment extends Fragment {
             }
         });
     }
+    public void goToItemtFragment(String dataToSend){
+        Bundle bundle = new Bundle();
+        bundle.putString("key", dataToSend);
+        ItemFragment fragment = new ItemFragment();
+        fragment.setArguments(bundle);
+        FragmentManager manager = ((MainActivity) getContext()).getSupportFragmentManager();
+        fragment.setArguments(bundle);
+        manager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_host_fragment_activity_main,fragment,null).commit();
 
+    }
 
 
     private void showAlert(String title, String message) {

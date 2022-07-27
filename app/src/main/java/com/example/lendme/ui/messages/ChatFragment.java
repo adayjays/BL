@@ -11,9 +11,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lendme.MainActivity;
 import com.example.lendme.R;
 import com.example.lendme.RecyclerViewClickListener;
 import com.parse.GetCallback;
@@ -167,6 +170,7 @@ public class ChatFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }
+
 
     public void sendMessage(){
 

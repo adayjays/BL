@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         }
         lendBtn.setOnClickListener(this);
-
+        borrowBtn.setOnClickListener(this);
         return view;
     }
 
