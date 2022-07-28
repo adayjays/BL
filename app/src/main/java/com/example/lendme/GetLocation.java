@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.util.Log;
 
@@ -20,12 +21,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class GetLocation {
+public class GetLocation  {
+    protected LocationListener locationListener;
     Context context;
     private static final int REQUEST_LOCATION = 1;
     LocationManager locationManager;
     public GetLocation(Context c){
         context = c;
+
+
     }
 
 
@@ -115,7 +119,8 @@ public class GetLocation {
     }
     public ParseGeoPoint saveCurrentUserLocation(Activity activity) {
         // requesting permission to get user's location
-        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         }
         else {
@@ -136,7 +141,7 @@ public class GetLocation {
         }
         return null;
     }
-    public Location getLocation(Activity activity) {
+    public Location getLocation(Activity activity,LocationManager lm) {
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
@@ -148,7 +153,12 @@ public class GetLocation {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
 //            return null;
+            return null;
+
+//            return lm.getCurrentLocation();
         }
-        return locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        return lm.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
     }
+
+
 }

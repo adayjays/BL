@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,6 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private ConstraintLayout container;
 
 
     @Override
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 //            goToFragment(fragment);
 //            // and get whatever type user account id is
 //        }
-
+        container = findViewById(R.id.container);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             goToFragment(fragment);
             // and get whatever type user account id is
         }
+
 
 
     }
@@ -82,5 +85,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this,
                 msg, Toast.LENGTH_LONG).show();
     }
+
 
 }

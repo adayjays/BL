@@ -50,5 +50,7 @@ dependencies {
 
 //    maps api
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
+//    shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
 }
