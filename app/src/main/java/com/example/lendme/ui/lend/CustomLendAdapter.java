@@ -11,6 +11,7 @@ class CustomLendAdapter extends BaseAdapter {
         super();
         this.items = itemsCategories;
     }
+    
     @Override
     public int getCount() {
         return items.length;

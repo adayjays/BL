@@ -29,22 +29,10 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PostItemFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PostItemFragment extends Fragment implements LocationListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private static final int REQUEST_LOCATION = 1;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     EditText title;
     EditText imageUrl;
     EditText description;
@@ -57,41 +45,17 @@ public class PostItemFragment extends Fragment implements LocationListener {
     private RecyclerView recyclerView;
     private TextView emptyText;
     private LocationManager locationManager;
-    private Location loc;
+    private Location location;
     private String cat;
     private String locationLatLong = "";
 
     private ProgressDialog progressDialog;
 
-    public PostItemFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PostItemFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PostItemFragment newInstance(String param1, String param2) {
-        PostItemFragment fragment = new PostItemFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public PostItemFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         activity = getActivity();
     }
 
@@ -99,9 +63,7 @@ public class PostItemFragment extends Fragment implements LocationListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         activity = getActivity();
-        Bundle bundle = this.getArguments();
         View view = inflater.inflate(R.layout.fragment_post_item, container, false);
-        String Key = bundle.getString("key");
         title = view.findViewById(R.id.title);
         description = view.findViewById(R.id.description);
         availability = view.findViewById(R.id.availability);
@@ -111,19 +73,19 @@ public class PostItemFragment extends Fragment implements LocationListener {
         imageUrl = view.findViewById(R.id.image_url);
         progressDialog = new ProgressDialog(getContext());
 //        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        loc = null;
+        location = null;
         GetLocation getLocationInstance = new GetLocation(activity);
 
         locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
 
-            loc = getLocationInstance.getLocation(activity);
-            onLocationChanged(loc);
-
+        location = getLocationInstance.getLocation(activity,locationManager);
+        if (location != null) {
+            onLocationChanged(location);
+        }
 
         cat = "Books";
 
-
-        String[] items = new String[]{"Books", "Outdoor supplies", "Technology", "Household Items", "Clothing and Jewelry", "Miscellaneous"};
+        String[] items = new String[] {"Books", "Outdoor supplies", "Technology", "Household Items", "Clothing and Jewelry", "Miscellaneous"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, items);
 
@@ -135,15 +97,12 @@ public class PostItemFragment extends Fragment implements LocationListener {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 saveTodo();
             }
         });
@@ -152,32 +111,34 @@ public class PostItemFragment extends Fragment implements LocationListener {
         return view;
     }
 
-
-
     private void saveTodo() {
         ParseObject item = new ParseObject("items");
         GetLocation getLocation = new GetLocation(getContext());
-        if (title.getText().toString().length() != 0 && description.getText().toString().length() != 0 &&(URLUtil.isHttpUrl(imageUrl.getText().toString()) || URLUtil.isHttpsUrl(imageUrl.getText().toString()))) {
-
+        boolean requiredFields = title.getText().toString().length() != 0 && 
+                                 description.getText().toString().length() != 0 && 
+                                 (URLUtil.isHttpUrl(imageUrl.getText().toString()) || URLUtil.isHttpsUrl(imageUrl.getText().toString()));
+        if (requiredFields) {
             progressDialog.show();
             item.put("title", title.getText().toString());
             item.put("description", description.getText().toString());
             item.put("availability", availability.getText().toString());
-            item.put("price",price.getText().toString());
+            item.put("price", price.getText().toString());
             item.put("image_url", imageUrl.getText().toString());
-            if (locationLatLong == ""){
-                item.put("seller_loc", "no location data found");
-            }else {
-                String[]locationLatLongArray = locationLatLong.split(",");
+
+            if (locationLatLong == "") {
+                item.put("seller_loc", new ParseGeoPoint(56.48, 88.08));
+            } else {
+                String[] locationLatLongArray = locationLatLong.split(",");
                 double lat = Double.parseDouble(locationLatLongArray[0]);
                 double lng = Double.parseDouble(locationLatLongArray[1]);
 
-                item.put("seller_loc",new ParseGeoPoint(lat,lng));
+                item.put("seller_loc", new ParseGeoPoint(lat, lng));
             }
-            item.put("category",cat);
-            item.put("is_borrowable",1);
+
+            item.put("category", cat);
+            item.put("is_borrowable", 1);
             ParseUser currentUser = ParseUser.getCurrentUser();
-            item.put("posted_by",currentUser.getObjectId());
+            item.put("posted_by", currentUser.getObjectId());
 
             item.saveInBackground(e -> {
                 progressDialog.dismiss();
@@ -208,7 +169,6 @@ public class PostItemFragment extends Fragment implements LocationListener {
     public void onLocationChanged(@NonNull Location location) {
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
-        locationLatLong = latitude+","+longitude;
-
+        locationLatLong = latitude + "," + longitude;
     }
 }

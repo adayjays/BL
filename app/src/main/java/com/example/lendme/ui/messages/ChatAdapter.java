@@ -29,7 +29,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatHolder> {
     public ChatAdapter(List<ParseObject> list, Context context) {
         this.list = list;
         this.context = context;
-
     }
 
     @NonNull
@@ -39,22 +38,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatHolder> {
         return new ChatHolder(view);
     }
 
-
-
     @Override
     public void onBindViewHolder(@NonNull ChatHolder holder, @SuppressLint("RecyclerView") final int position) {
         ParseObject object = list.get(position);
         ParseUser currentUser = ParseUser.getCurrentUser();
-        String userObjectId =currentUser.getObjectId();
+        String userObjectId = currentUser.getObjectId();
         String person = "Lender";
-        if(userObjectId == object.getString("sender")){
+        if (userObjectId == object.getString("sender")) {
             person = "Me";
         }
-        holder.title.setText(person+"  : "+object.getString("message"));
+        holder.title.setText(person + "  : " + object.getString("message"));
         holder.msgStatus.setText(object.getString("is_read"));
 //        holder.description.setText(object.getString("description"));
-
     }
+
     @Override
     public int getItemCount() {
         return list.size();

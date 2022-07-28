@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/BorrowFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.example.lendme.FirstFragment"
+        android:id="@+id/BorrowFragment"
+        android:name="com.example.lendme.ui.borrow.Borrow"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            app:destination="@id/LendFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.lendme.SecondFragment"
+        android:id="@+id/LendFragment"
+        android:name="com.example.lendme.ui.lend.Lend"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            app:destination="@id/BorrowFragment" />
     </fragment>
 </navigation>

@@ -17,7 +17,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.lendme.R;
-import com.example.lendme.ui.messages.ChatFragment;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -114,13 +113,6 @@ public class ItemFragment extends Fragment {
                     String extra = ownerId +","+ objectId;
                     Bundle bundle = new Bundle();
                     bundle.putString("key",extra);
-                    ChatFragment fragment = new ChatFragment();
-                    FragmentManager fm = getFragmentManager();
-                    FragmentTransaction ft = fm.beginTransaction();
-                    fragment.setArguments(bundle);
-
-                    ft.replace(R.id.nav_host_fragment_activity_main,fragment,"new fragment");
-                    ft.commit();
                 }
             });
         }

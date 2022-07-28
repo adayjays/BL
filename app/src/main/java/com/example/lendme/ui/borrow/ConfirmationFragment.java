@@ -1,17 +1,14 @@
 package com.example.lendme.ui.borrow;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.lendme.MainActivity;
 import com.example.lendme.R;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -23,47 +20,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ConfirmationFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ConfirmationFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     Boolean isAvailable = false;
-    TextView thankYouMsg, youMsg, notfMsg;
-    Button homeBtn,confirm;
+    TextView thankYouMsg, agreementMsg, warningMsg;
+    Button homeButton, confirm;
     String value_key = "1";
 
-    public ConfirmationFragment() {
-        // Required empty public constructor
-    }
-
-    // TODO: Rename and change types and number of parameters
-    public static ConfirmationFragment newInstance(String param1, String param2) {
-        ConfirmationFragment fragment = new ConfirmationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public ConfirmationFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -72,28 +40,30 @@ public class ConfirmationFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_confirmation, container, false);
         thankYouMsg = view.findViewById(R.id.thank_you_msg);
-        youMsg = view.findViewById(R.id.you_msg);
-        notfMsg = view.findViewById(R.id.notf_msg);
-        homeBtn = view.findViewById(R.id.button_home);
+        agreementMsg = view.findViewById(R.id.you_msg);
+        warningMsg = view.findViewById(R.id.notf_msg);
+        homeButton = view.findViewById(R.id.button_home);
         confirm = view.findViewById(R.id.confirm_btn);
 
-        homeBtn.setOnClickListener(new View.OnClickListener() {
+        homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent in = new Intent(getActivity(), MainActivity.class);
-                startActivity(in);
+//                Intent in = new Intent(ConfirmationActivity.this, MainActivity.class);
+//                startActivity(in);
             }
         });
+
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 updateItem(value_key);
-                Toast t = Toast.makeText(getActivity(), "Borrow Confirmed !", Toast.LENGTH_SHORT);
-                t.show();
-                Intent in = new Intent(getActivity(), MainActivity.class);
-                startActivity(in);
+//                Toast t = Toast.makeText(ConfirmationActivity.this, "Borrow Confirmed !", Toast.LENGTH_SHORT);
+//                t.show();
+//                Intent in = new Intent(ConfirmationActivity.this, MainActivity.class);
+//                startActivity(in);
             }
         });
+
         Bundle extras = this.getArguments();
 //        Log.e(extras.getString("key"));
         if (extras != null) {
@@ -105,7 +75,8 @@ public class ConfirmationFragment extends Fragment {
         }
         return view;
     }
-    public void getData(String key){
+
+    public void getData(String key) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("items");
 // Query parameters based on the item name
         query.whereEqualTo("objectId", key);
@@ -119,27 +90,27 @@ public class ConfirmationFragment extends Fragment {
                     if (currentUser != null) {
                         username = currentUser.getUsername();
                     }
-                    String new_thank_you_msg  = "Thank you for using LendMe,"+ username +"! ";
+                    String newThankYouMsg  = "Thank you for using LendMe, " + username + "! ";
                     Date today = new Date();
                     SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd");
-                    Calendar c = Calendar.getInstance();
-                    c.add(Calendar.DATE, 1);  // number of days to add
-                    String tomorrow = (String)(formattedDate.format(c.getTime()));
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DATE, 1);  // number of days to add
+                    String tomorrow = (String)(formattedDate.format(calendar.getTime()));
 
-                    String new_you_msg = "You and the lender will meet at the agreed location on "+tomorrow;
-                    c.add(Calendar.DATE,6);
-                    String new_notf_msg = "You must return '"+ title +"' by "+ (String)formattedDate.format(c.getTime()) +" to avoid late fees.";
-                    thankYouMsg.setText(new_thank_you_msg);
-                    youMsg.setText(new_you_msg);
-                    notfMsg.setText(new_notf_msg);
-
+                    String newAgreementMsg = "You and the lender will meet at the agreed location on " + tomorrow;
+                    calendar.add(Calendar.DATE,6);
+                    String newWarningMsg = "You must return '" + title + "' by " + (String)formattedDate.format(calendar.getTime()) + " to avoid late fees.";
+                    thankYouMsg.setText(newThankYouMsg);
+                    agreementMsg.setText(newAgreementMsg);
+                    warningMsg.setText(newWarningMsg);
                 } else {
                     // Something is wrong
                 }
             }
         });
     }
-    private void updateItem(String key){
+
+    private void updateItem(String key) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("items");
 // Retrieve the object by id
         query.getInBackground(key, new GetCallback<ParseObject>() {
