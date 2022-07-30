@@ -8,8 +8,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.lendme.R;
+import com.example.lendme.ui.home.HomeFragment;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -48,6 +51,11 @@ public class ConfirmationFragment extends Fragment {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomeFragment home = new HomeFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.nav_host_fragment_activity_main, home, "fragment_screen");
+                fragmentTransaction.commit();
 //                Intent in = new Intent(ConfirmationActivity.this, MainActivity.class);
 //                startActivity(in);
             }
@@ -57,6 +65,11 @@ public class ConfirmationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 updateItem(value_key);
+                HomeFragment home = new HomeFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.nav_host_fragment_activity_main, home, "fragment_screen");
+                fragmentTransaction.commit();
 //                Toast t = Toast.makeText(ConfirmationActivity.this, "Borrow Confirmed !", Toast.LENGTH_SHORT);
 //                t.show();
 //                Intent in = new Intent(ConfirmationActivity.this, MainActivity.class);

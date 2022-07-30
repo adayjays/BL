@@ -8,14 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lendme.R;
 import com.example.lendme.RecyclerViewClickListener;
+import com.example.lendme.models.Chat;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -23,14 +23,15 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatFragment extends Fragment {
 
     Button send;
     EditText msg;
-    String itemId, chatId, userId, sellerId,userName;
-    RecyclerView recyclerView;
+    String itemId, chatId, userId, sellerId,userName,chatIdFromFragment;
+    ListView listView;
     RecyclerViewClickListener recyclerViewClickListener;
 
     public ChatFragment() {
@@ -49,10 +50,12 @@ public class ChatFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         msg = view.findViewById(R.id.msg_input);
         send = view.findViewById(R.id.send_btn);
-        recyclerView = view.findViewById(R.id.recycler_chat);
+        listView = view.findViewById(R.id.list_view_chat);
+        chatIdFromFragment = null;
 
         itemId = "";
-        chatId = getChatId();
+        chatId = "";
+        getChatId();
         userId = "";
         sellerId = "";
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -60,17 +63,25 @@ public class ChatFragment extends Fragment {
         userName = currentUser.getUsername();
 
         Bundle extras = this.getArguments();
+
         if (extras != null) {
-            String value = extras.getString("key");
-            itemId = value;
-            sellerId = value;
+            chatIdFromFragment = extras.getString("chatId");
+            if(chatIdFromFragment == null) {
+                String value = extras.getString("key");
+                String[] value_array = value.split(",");
+                itemId = value_array[0];
+                sellerId = value_array[1];
+            }
         } else {
             showToast("Empty key");
+        }
+        if(chatIdFromFragment != null){
+            getChats();
         }
 
         boolean emptyIds = itemId.equals("") && sellerId.equals("") && userId.equals("");
         if (!emptyIds ){
-            chatId = getChatId();
+            getChatId();
             getChats();
         }
 
@@ -93,19 +104,26 @@ public class ChatFragment extends Fragment {
 
         return view;
     }
+
+
+
     private void getChats() {
         readChat();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("chats");
+        if(chatIdFromFragment != null){
+            query.whereEqualTo("chat_id", chatIdFromFragment);
 
-// The query will resolve only after calling this method
-        query.whereEqualTo("seller", sellerId);
-        query.whereEqualTo("item", itemId);
-        query.whereEqualTo("possible_buyer", userId);
+        }else {
+            query.whereEqualTo("seller", sellerId);
+            query.whereEqualTo("item", itemId);
+            query.whereEqualTo("possible_buyer", userId);
+
+        }
         query.findInBackground((objects, e) -> {
             if (e == null) {
                 initChatList(objects);
             } else {
-                showToast("Error !"+ e.getMessage());
+                showToast("Error !" + e.getMessage());
             }
         });
     }
@@ -114,28 +132,50 @@ public class ChatFragment extends Fragment {
         if (list == null || list.isEmpty()) {
             return;
         }
+        List<Chat> chatList = new ArrayList<>();
+        for (ParseObject object : list) {
 
-        ChatAdapter adapter = new ChatAdapter(list, getContext());
+            String sender_person = "";
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            String userObjectId = currentUser.getObjectId();
+            String person = "Lender";
+            if (userObjectId == object.getString("sender")) {
+                person = "Me";
+            }
+            sender_person = person + "  : " + object.getString("message");
+            if (chatIdFromFragment != null) {
+                itemId = object.getString("item");
+                sellerId = object.getString("seller");
+            }
+
+            Chat chat = new Chat(
+              object.getObjectId(),
+                    object.getString("seller"),
+                    object.getString("item"),
+                    object.getString("possible_buyer"),
+                    object.getString("chat_id"),
+                    object.getString("is_read"),
+                    object.getString("sender"),
+                    object.getString("sender_name"),
+                    sender_person
+                    );
+            chatList.add(chat);
+        }
+        Toast.makeText(getContext(), "size "+chatList.size(), Toast.LENGTH_SHORT).show();
+        CustomChatListAdapter adapter = new CustomChatListAdapter(chatList,getContext(),R.layout.chat_item);
+        listView.setAdapter(adapter);
+
+//        ChatAdapter adapter = new ChatAdapter(list, getContext());
+//
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        recyclerView.setAdapter(adapter);
     }
 
     public void sendMessage(){
-        ParseObject msgItem = new ParseObject("messages");
         if (msg.getText().toString().trim().length() > 0){
             if (chatId.trim().length() == 0){
-                msgItem.put("seller", sellerId);
-                msgItem.put("item",itemId);
-                msgItem.put("possible_buyer", userId);
-                msgItem.saveInBackground(e -> {
-                    if (e == null){
-                        chatId = getChatId();
-                        saveChat();
-                    }else {
-                        showToast("Error ! : "+ e.getMessage());
-                    }
-                });
+                createMessageItem();
             }else{
                 saveChat();
             }
@@ -146,17 +186,20 @@ public class ChatFragment extends Fragment {
 
     public void createMessageItem(){
         ParseObject msgItem =new ParseObject("messages");
-        if (chatId.trim().length() == 0){
+        if (chatId.trim().length() == 0 && chatIdFromFragment == null){
             msgItem.put("seller", sellerId);
             msgItem.put("item",itemId);
             msgItem.put("possible_buyer", userId);
+            msgItem.put("sender_name", userName);
             msgItem.saveInBackground(e -> {
                 if (e == null){
-                    chatId = getChatId();
+                    getChatId();
                 }else {
                     showToast("Error ! : "+ e.getMessage());
                 }
             });
+        }else{
+            chatId = chatIdFromFragment;
         }
 
     }
@@ -177,13 +220,14 @@ public class ChatFragment extends Fragment {
                 //We saved the object and fetching data again
                 showToast("Sent");
                 msg.setText("");
+                getChats();
             } else {
                 //We have an error.We are showing error message here.
                 showToast("Error !"+ e.getMessage());
             }
         });
     }
-    public String getChatId(){
+    public void getChatId(){
         final String[] newChatId = {""};
         ParseQuery<ParseObject> query = ParseQuery.getQuery("messages");
         query.whereEqualTo("seller", sellerId);
@@ -192,15 +236,31 @@ public class ChatFragment extends Fragment {
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject player, ParseException e) {
                 if (e == null) {
-                    newChatId[0] = player.getObjectId();
+                    chatId = player.getObjectId();
                 } else {
                     // Something is wrong
-                    createMessageItem();
-                    showToast("Starting new Conversation");
+                    tryAsSeller();
                 }
             }
         });
-        return newChatId[0];
+
+    }
+    public void tryAsSeller(){
+//        createMessageItem
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("messages");
+        query.whereEqualTo("possible_buyer", sellerId);
+        query.whereEqualTo("item", itemId);
+        query.whereEqualTo("seller", userId);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            public void done(ParseObject player, ParseException e) {
+                if (e == null) {
+                    chatId = player.getObjectId();
+                } else {
+                    // Something is wrong
+                    createMessageItem();
+                }
+            }
+        });
     }
 
     private void showToast(String msg) {
@@ -214,11 +274,11 @@ public class ChatFragment extends Fragment {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("chats");
 
 // The query will resolve only after calling this method
-        query.whereEqualTo("seller", sellerId);
-        query.whereEqualTo("item", itemId);
-        query.whereEqualTo("possible_buyer", userId);
-        query.whereEqualTo("is_read", "sent");
-        query.whereNotEqualTo("sender", userId);
+        query.whereEqualTo("chat_id", chatId);
+//        query.whereEqualTo("item", itemId);
+//        query.whereEqualTo("possible_buyer", userId);
+//        query.whereEqualTo("is_read", "sent");
+//        query.whereNotEqualTo("sender", userId);
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject object, ParseException e) {

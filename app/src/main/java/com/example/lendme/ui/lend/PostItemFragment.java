@@ -92,7 +92,7 @@ public class PostItemFragment extends Fragment implements LocationListener,View.
         submit = view.findViewById(R.id.submit);
         category = view.findViewById(R.id.category);
         price = view.findViewById(R.id.price);
-        imageUrl = view.findViewById(R.id.image_url);
+        // imageUrl = view.findViewById(R.id.image_url);
         imageButton = view.findViewById(R.id.imageButton);
         progressDialog = new ProgressDialog(getContext());
 

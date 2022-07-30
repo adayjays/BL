@@ -33,7 +33,8 @@ public class GetLocation  {
     }
     public void saveCurrentUserLocation(Activity activity,LocationManager lm) {
         // requesting permission to get user's location
-        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         }
         else {
@@ -106,22 +107,8 @@ public class GetLocation  {
             add = add + "\n" + obj.getSubAdminArea();
             add = add + "\n" + obj.getLocality();
             add = add + "\n" + obj.getSubThoroughfare();
-//
-//
-//            System.out.println("obj.getCountryName()"+obj.getCountryName());
-//            System.out.println("obj.getCountryCode()"+obj.getCountryCode());
-//            System.out.println("obj.getAdminArea()"+obj.getAdminArea());
-//            System.out.println("obj.getPostalCode()"+obj.getPostalCode());
-//            System.out.println("obj.getSubAdminArea()"+obj.getSubAdminArea());
-//            System.out.println("obj.getLocality()"+obj.getLocality());
-//            System.out.println("obj.getSubThoroughfare()"+obj.getSubThoroughfare());
             location = currentState + ", "+currentCity;
 
-//            Log.v("IGA", "Address" + add);
-            // Toast.makeText(this, "Address=>" + add,
-            // Toast.LENGTH_SHORT).show();
-
-            // TennisAppActivity.showDialog(add);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

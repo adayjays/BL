@@ -4,25 +4,30 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.lendme.R;
+import com.example.lendme.models.Message;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessageFragment extends Fragment {
 
     private boolean previousMessages = false;
     private TextView messageText;
-    private RecyclerView recyclerView;
+    private ListView listView;
+    private List<Message> messagesList = new ArrayList<>();
 
     String userId;
 
@@ -39,14 +44,28 @@ public class MessageFragment extends Fragment {
         ParseUser currentUser = ParseUser.getCurrentUser();
         userId = currentUser.getObjectId();
         View view = inflater.inflate(R.layout.fragment_message, container, false);
-        messageText = view.findViewById(R.id.no_msgs);
-        recyclerView = view.findViewById(R.id.msg_list);
+
+        listView = view.findViewById(R.id.msg_list);
 
         getMessages();
         getMessagesAsLender();
-        if (previousMessages) {
-            messageText.setText("");
-        }
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("chatId", messagesList.get(i).getObjectId());
+                ChatFragment fragment = new ChatFragment();
+                fragment.setArguments(bundle);
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.nav_host_fragment_activity_main, fragment, "ChatFragment");
+                fragmentTransaction.commit();
+
+                 }
+        });
+
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -85,11 +104,20 @@ public class MessageFragment extends Fragment {
         if (list == null || list.isEmpty()) {
             return;
         }
+        for (ParseObject object : list) {
 
-        MessageAdapter adapter = new MessageAdapter(list, getContext());
+            Message msg = new Message(
+                    object.getObjectId(),object.getString("seller"),object.getString("buyer"),object.getString("item"),
+                    object.getString("possible_buyer"),object.getString("createdAt"),object.getString("sender_name")
+            );
+            messagesList.add(msg);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+        }
+        if (messagesList.size()>0){
+            CustomMessageListAdapter adapter = new CustomMessageListAdapter(messagesList,getContext(),R.layout.message_item);
+            listView.setAdapter(adapter);
+
+        }
     }
 
 }

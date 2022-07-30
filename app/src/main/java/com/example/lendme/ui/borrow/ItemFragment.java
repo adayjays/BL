@@ -10,13 +10,13 @@ import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.lendme.R;
+import com.example.lendme.ui.messages.ChatFragment;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -85,7 +85,7 @@ public class ItemFragment extends Fragment {
         if (b != null) {
             String value = b.getString("key");
             objectId = value;
-            Toast.makeText(getContext(),"Text! "+value,Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(),"Text! "+value,Toast.LENGTH_SHORT).show();
             isAvailable = true;
             getData(value);
             //The key argument here must match that used in the other activity
@@ -113,6 +113,13 @@ public class ItemFragment extends Fragment {
                     String extra = ownerId +","+ objectId;
                     Bundle bundle = new Bundle();
                     bundle.putString("key",extra);
+
+                    ChatFragment chatFragment = new ChatFragment();
+                    chatFragment.setArguments(bundle);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.nav_host_fragment_activity_main, chatFragment, "chatFragment");
+                    fragmentTransaction.commit();
                 }
             });
         }
