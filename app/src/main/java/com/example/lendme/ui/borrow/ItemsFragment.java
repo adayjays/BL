@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lendme.GetLocation;
 import com.example.lendme.R;
-import com.example.lendme.RecyclerViewClickListener;
 import com.example.lendme.models.Item;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
@@ -34,7 +33,6 @@ import java.util.Locale;
 public class ItemsFragment extends Fragment {
 
     private ProgressDialog progressDialog;
-    private static RecyclerViewClickListener itemListener;
 
     private RecyclerView recyclerView;
     private TextView categoryType;
@@ -57,6 +55,7 @@ public class ItemsFragment extends Fragment {
 //        recyclerView = view.findViewById(R.id.recyclerView);
         categoryType = view.findViewById(R.id.category_type);
         itemList = view.findViewById(R.id.item_list);
+        locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
 //        empty_text = findViewById(R.id.empty_text);
 
         Bundle bundle = this.getArguments();
@@ -69,12 +68,7 @@ public class ItemsFragment extends Fragment {
 
         getItemList(value);
 
-        itemListener = new RecyclerViewClickListener() {
-            @Override
-            public void recyclerViewListClicked(View v, int position) {
-//                Toast.makeText(getContext(),"Position is",Toast.LENGTH_LONG).show();
-            }
-        };
+
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -106,9 +100,11 @@ public class ItemsFragment extends Fragment {
         }
         query.whereEqualTo("is_borrowable", 1);
         GetLocation getLocation = new GetLocation(getContext());
-        Location location = getLocation.getLocation(getActivity(),locationManager);
-        if (location != null) {
-            query.whereNear("seller_loc", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+        if (locationManager != null) {
+            Location location = getLocation.getLocation(getActivity(), locationManager);
+            if (location != null) {
+                query.whereNear("seller_loc", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+            }
         }
         query.orderByDescending("createdAt");
         query.findInBackground((objects, e) -> {

@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.example.lendme.R;
-import com.example.lendme.RecyclerViewClickListener;
 import com.example.lendme.models.Chat;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -32,7 +31,6 @@ public class ChatFragment extends Fragment {
     EditText msg;
     String itemId, chatId, userId, sellerId,userName,chatIdFromFragment;
     ListView listView;
-    RecyclerViewClickListener recyclerViewClickListener;
 
     public ChatFragment() {
         // Required empty public constructor

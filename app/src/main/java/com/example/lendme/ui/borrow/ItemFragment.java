@@ -139,11 +139,15 @@ public class ItemFragment extends Fragment {
                     String title = item.getString("title");
                     String img =  item.getString("image_url");
                     ownerId = item.getString("posted_by");
-                    String new_other_txt = "$"+item.getString("price")+"/day\n Available "+item.getString("price")+"\nLocal only";
+                    String newOtherTxt = "$"+item.getString("price")+" per day.";
                     descTxt.setText(desc);
                     titleTxt.setText(title);
-                    imageView3.setImageBitmap(getBitmapFromURL(img));
-                    otherTxt.setText(new_other_txt);
+                    if (img != null){
+                        imageView3.setImageBitmap(getBitmapFromURL(img));
+                    }else{
+                        imageView3.setImageResource(R.drawable.nopictures);
+                    }
+                    otherTxt.setText(newOtherTxt);
                 } else {
                     // Something is wrong
                 }

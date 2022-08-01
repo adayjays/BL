@@ -68,16 +68,13 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> {
             if(imageView !=null){
                 if(p.getImage_url() != null){
                     imageView.setImageBitmap(p.getImage_url());
+                }else{
+//                    Drawable drawable = getResources().getDrawable
+                    imageView.setImageResource(R.drawable.nopictures);
                 }
             }
         }
 
         return v;
-    }
-
-    static class ViewHolder {
-        TextView title;
-        TextView location;
-        ImageView image;
     }
 }

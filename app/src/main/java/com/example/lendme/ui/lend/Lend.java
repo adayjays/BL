@@ -9,7 +9,12 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.lendme.CategoryListAdapter;
 import com.example.lendme.R;
+import com.example.lendme.models.Category;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Lend extends Fragment {
 
@@ -28,9 +33,15 @@ public class Lend extends Fragment {
         View view = inflater.inflate(R.layout.fragment_lend, container, false);
         String[] itemsCategories = new String[]{"Books", "Outdoor supplies", "Technology", "Household Items", "Clothing and Jewelry", "Miscellaneous"};
         getActivity().setTitle("Lend");
-
         listView = view.findViewById(R.id.my_list_view2);
-        CustomLendAdapter listAdapter = new CustomLendAdapter(itemsCategories);
+
+        List<Category> itemCategoryList = new ArrayList<>();
+        for (int i = 0; i < itemsCategories.length; i++) {
+            Category category = new Category(itemsCategories[i]);
+            itemCategoryList.add(category);
+        }
+
+        CategoryListAdapter listAdapter = new CategoryListAdapter(itemCategoryList,getContext(),R.layout.category_list_row);
 
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
