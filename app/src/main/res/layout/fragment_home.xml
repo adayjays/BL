@@ -14,6 +14,7 @@ tools:context=".ui.home.HomeFragment">
     android:layout_height="wrap_content"
     android:text="Welcome to LendMe, Sarah!"
     style="@style/page_title"
+    android:textColor="?android:textColorPrimary"
     android:layout_gravity="center_horizontal"
     android:gravity="center_horizontal"
     />
@@ -50,6 +51,7 @@ tools:context=".ui.home.HomeFragment">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="Location Preferences (ON)"
+    android:textColor="?android:textColorPrimary"
     style="@style/page_footer"
     android:gravity="center" />
 
@@ -63,6 +65,7 @@ tools:context=".ui.home.HomeFragment">
         android:layout_height="wrap_content"
         android:text="Need help?"
         android:paddingEnd="20dp"
+        android:textColor="?android:textColorPrimary"
         android:layout_gravity="end"
         android:textAlignment="textEnd"
         style="@style/page_footer"/>
@@ -77,6 +80,7 @@ tools:context=".ui.home.HomeFragment">
         android:layout_gravity="end"
         android:textAlignment="textStart"
         style="@style/page_footer"
+        android:textColor="?android:textColorPrimary"
         android:gravity="center"
         tools:ignore="RtlCompat" />
 </LinearLayout>

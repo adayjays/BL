@@ -64,6 +64,7 @@ public class ItemsFragment extends Fragment {
             value = bundle.getString("key");
 //            set it as title of the page
             categoryType.setText(value.toUpperCase(Locale.ROOT));
+            getActivity().setTitle(value.toUpperCase(Locale.ROOT));
         }
 
         getItemList(value);
