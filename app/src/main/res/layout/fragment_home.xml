@@ -86,6 +86,6 @@ tools:context=".ui.home.HomeFragment">
         android:paddingTop="10pt"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Swipe top and right to go to Borrow\nSwipe top and right to go to Lend"
+        android:text="Swipe top and right to go to Borrow\nSwipe bottom and left to go to Lend"
         android:textStyle="bold" />
 </LinearLayout>
