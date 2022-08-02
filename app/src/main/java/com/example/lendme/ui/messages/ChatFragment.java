@@ -67,8 +67,8 @@ public class ChatFragment extends Fragment {
             if(chatIdFromFragment == null) {
                 String value = extras.getString("key");
                 String[] value_array = value.split(",");
-                itemId = value_array[0];
-                sellerId = value_array[1];
+                sellerId = value_array[0];
+                itemId = value_array[1];
             }
         } else {
             showToast("Empty key");
@@ -79,7 +79,9 @@ public class ChatFragment extends Fragment {
 
         boolean emptyIds = itemId.equals("") && sellerId.equals("") && userId.equals("");
         if (!emptyIds ){
-            getChatId();
+            if(itemId.equals("")) {
+                getChatId();
+            }
             getChats();
         }
 
@@ -138,9 +140,10 @@ public class ChatFragment extends Fragment {
             ParseUser currentUser = ParseUser.getCurrentUser();
             String userObjectId = currentUser.getObjectId();
             String person = "Lender";
-            if (userObjectId == object.getString("sender")) {
+            if (userObjectId.equals(object.getString("sender"))) {
                 person = "Me";
             }
+
             sender_person = person + "  : " + object.getString("message");
             if (chatIdFromFragment != null) {
                 itemId = object.getString("item");
@@ -160,14 +163,9 @@ public class ChatFragment extends Fragment {
                     );
             chatList.add(chat);
         }
-        Toast.makeText(getContext(), "size "+chatList.size(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "size "+chatList.size(), Toast.LENGTH_SHORT).show();
         CustomChatListAdapter adapter = new CustomChatListAdapter(chatList,getContext(),R.layout.chat_item);
         listView.setAdapter(adapter);
-
-//        ChatAdapter adapter = new ChatAdapter(list, getContext());
-//
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        recyclerView.setAdapter(adapter);
     }
 
     public void sendMessage(){
